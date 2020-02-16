@@ -25,9 +25,12 @@
             ],
             "styles": [
               "src/styles.css",
-              "../personal-site/node_modules/bootstrap/dist/css/bootstrap.min.css"
+              "../personal-site/node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "../personal-site/node_modules/font-awesome/css/font-awesome.css"
             ],
-            "scripts": []
+            "scripts": [
+              "../personal-site/node_modules/jquery/dist/jquery.min.js",
+              "../personal-site/node_modules/bootstrap/dist/js/bootstrap.min.js"]
           },
           "configurations": {
             "production": {
