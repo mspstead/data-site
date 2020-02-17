@@ -70,10 +70,18 @@ class Investment_Analysis:
             prices_df['Shares'] = shares
             prices_df['CurrencyCode'] = currency_code
 
+            #normalise ETF prices to MajorCurrency if price varies between minor and major currencies
+            min_val_100 = prices_df['Close'].min() * 100
+            std_dev = prices_df['Close'].std()
+            max_val = prices_df['Close'].max()
+            if(max_val>min_val_100):
+                prices_df['Close'] = prices_df['Close'].apply(lambda x: x/100 if x > min_val_100-std_dev else x)
+
             prices_df.reset_index(inplace=True)
             price_dfs.append(prices_df)
 
         final_prices_df = pd.concat(price_dfs)
+
         return final_prices_df
 
 
@@ -99,7 +107,5 @@ class Investment_Analysis:
 
         performance = {'BasketPerformance':daily_market_caps.to_dict(orient='records'),
                        'EquityDetails':prices.to_dict(orient='records')}
-
-        daily_market_caps.plot(x='Date',y='Cumulative_Return')
 
         return performance
