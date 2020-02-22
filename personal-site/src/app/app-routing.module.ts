@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AboutComponent } from './about/about.component'
 import { BlogListComponent } from './blog-list/blog-list.component'
 import { FitbitDataComponent } from './fitbit-data/fitbit-data.component'
-import { InvestmentsComponent } from './investments/investments.component'
+import { YfinanceComponent } from './yfinance/yfinance.component'
 import { AppComponent } from './app.component'
 
 
@@ -12,7 +12,7 @@ const routes: Routes = [
         { path: '', component: BlogListComponent},
         { path: 'blog', component: BlogListComponent},
         { path: 'blog/fitbit', component: FitbitDataComponent},
-        { path: 'blog/investments', component: InvestmentsComponent}
+        { path: 'blog/yfinance', component: YfinanceComponent}
       ];
 
 @NgModule({
@@ -20,4 +20,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-export const routingComponents = [AboutComponent,BlogListComponent,FitbitDataComponent,InvestmentsComponent]
+export const routingComponents = [AboutComponent,BlogListComponent,FitbitDataComponent,YfinanceComponent]

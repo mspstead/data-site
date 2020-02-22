@@ -1,15 +1,15 @@
 import PortfolioPerformance as pp
-import datetime as dt
+import os
 
 def lambda_handler(event, context):
 
     BasketComposition = event.get('BasketComposition')
     Currency = event.get('Currency')
+    api_key = os.environ['API_KEY']
+    start_date = event.get('StartDate')
+    end_date = event.get('EndDate')
 
-    start_date = dt.datetime.strptime(event.get('StartDate'),'%Y-%m-%d')
-    end_date = dt.datetime.strptime(event.get('EndDate'),'%Y-%m-%d')
-
-    ia = pp.Investment_Analysis(BasketComposition,Currency,start_date,end_date)
+    ia = pp.Investment_Analysis(BasketComposition,Currency,api_key,start_date,end_date)
     results = ia.getPerformanceMetrics()
 
     return results

@@ -1,12 +1,10 @@
-import yfinance as yf
 import requests as req
 import datetime as dt
 import pandas as pd
 
-
 class Investment_Analysis:
 
-    def __init__(self,BasketCompostion,BaseCurrency,start_date='',end_date=dt.datetime.today()):
+    def __init__(self,BasketCompostion,BaseCurrency,api_key,start_date=dt.datetime.today() - dt.timedelta(days=7),end_date=dt.datetime.today()):
         """
             :Parameters:
                 BasketComposition : Dict
@@ -16,20 +14,22 @@ class Investment_Analysis:
                 BaseCurrency : str
                     Base Currency code, eg. USD, basket constituents with differing currency codes will be FX'd
 
+                api_key : str
+                    API KEY for https://www.worldtradingdata.com/
+
                 start_date : date
                     Start of time range for performance metrics as python datetime object
+
                 end_date : date
                     End date, default is the current date as python datetime object.
+
         """
         self.BaseCurrency = BaseCurrency
         self.BasketComposition = BasketCompostion
+        self.api_key = api_key
+        self.start_date = start_date
         self.end_date = end_date
 
-        #if no start date given, go back one week
-        if start_date=='':
-            self.start_date = dt.datetime.today() - dt.timedelta(days=7)
-        else:
-            self.start_date = start_date
 
 
     def _getHistoricalFXRates(self):
@@ -38,10 +38,7 @@ class Investment_Analysis:
         Returns a pandas dataframe of currency rates based on the base currency and start/end dates provided at class creation.
         """
 
-        start_date = self.start_date.strftime('%Y-%m-%d')
-        end_date = self.end_date.strftime('%Y-%m-%d')
-
-        rates_url = 'https://api.exchangeratesapi.io/history?start_at='+start_date+'&end_at='+end_date+'&base='+self.BaseCurrency
+        rates_url = 'https://api.exchangeratesapi.io/history?start_at='+self.start_date+'&end_at='+self.end_date+'&base='+self.BaseCurrency
         rates_json = req.get(rates_url).json().get('rates')
 
         dates=[]
@@ -56,31 +53,40 @@ class Investment_Analysis:
         return rates_df
 
     def _getEquitiesHistory(self):
-        """Uses the yFinanace module to get pricing data for each equity returns a dataframe of prices"""
-        price_dfs = []
+        """Uses the worldtradingdata api to get pricing data for each equity returns a dataframe of prices"""
+
+        historical_price_api = "https://api.worldtradingdata.com/api/v1/history"
+        latest_info_api = "https://api.worldtradingdata.com/api/v1/stock"
+
+        dfs = []
         for id in self.BasketComposition:
+
             identifier = id.get('Identifier')
             shares = id.get('Shares')
 
-            equity = yf.Ticker(identifier)
-            currency_code = equity.info.get('currency')
+            params = {
+                'symbol': identifier,
+                'api_token': self.api_key,
+                'date_from':self.start_date,
+                'date_to':self.end_date
+            }
 
-            prices_df = equity.history(start=self.start_date, end=self.end_date)
+            equity_history = pd.DataFrame.from_dict(req.get(historical_price_api,params=params).json().get('history'),orient='index')
+            currency_code = req.get(latest_info_api,params=params).json().get('data')[0].get('currency')
+
+            prices_df = equity_history
             prices_df['Identifier'] = identifier
             prices_df['Shares'] = shares
             prices_df['CurrencyCode'] = currency_code
-
-            #normalise ETF prices to MajorCurrency if price varies between minor and major currencies
-            min_val_100 = prices_df['Close'].min() * 100
-            std_dev = prices_df['Close'].std()
-            max_val = prices_df['Close'].max()
-            if(max_val>min_val_100):
-                prices_df['Close'] = prices_df['Close'].apply(lambda x: x/100 if x > min_val_100-std_dev else x)
-
             prices_df.reset_index(inplace=True)
-            price_dfs.append(prices_df)
+            prices_df = prices_df.rename(columns={'index':'Date','close':'Close'})
 
-        final_prices_df = pd.concat(price_dfs)
+            prices_df['Date'] = pd.to_datetime(prices_df['Date'])
+            prices_df['Close'] = prices_df['Close'].astype(float)
+
+            dfs.append(prices_df)
+
+        final_prices_df = pd.concat(dfs)
 
         return final_prices_df
 
@@ -92,7 +98,7 @@ class Investment_Analysis:
         prices = self._getEquitiesHistory()
 
         constituents = pd.merge(prices,fx_rates,'inner',left_on=['Date','CurrencyCode'],right_on=['CloseDate','CurrencyCode'])
-        constituents = constituents.drop(['CloseDate','Open', 'High', 'Low','Volume','Dividends','Stock Splits'],axis=1)
+        constituents = constituents.drop(['CloseDate','open', 'high', 'low','volume'],axis=1)
 
         constituents['constituent_mcap'] = constituents['Close'] * constituents['FXRate'] * constituents['Shares']
 

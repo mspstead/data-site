@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { BlogListComponent } from './blog-list/blog-list.component';
 import { FitbitDataComponent } from './fitbit-data/fitbit-data.component';
 import { AgGridModule } from 'ag-grid-angular';
-import { InvestmentsComponent } from './investments/investments.component';
+import { YfinanceComponent } from './yfinance/yfinance.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +15,7 @@ import { InvestmentsComponent } from './investments/investments.component';
     routingComponents,
     BlogListComponent,
     FitbitDataComponent,
-    InvestmentsComponent
+    YfinanceComponent
   ],
   imports: [
     BrowserModule,
