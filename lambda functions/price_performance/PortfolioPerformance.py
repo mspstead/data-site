@@ -1,6 +1,7 @@
 import requests as req
 import datetime as dt
 import pandas as pd
+import numpy as np
 
 class Investment_Analysis:
 
@@ -107,9 +108,13 @@ class Investment_Analysis:
 
         daily_market_caps['Daily_Return'] = daily_market_caps['Total_Market_Cap'].pct_change() * 100
         daily_market_caps['Cumulative_Return'] = daily_market_caps['Daily_Return'].cumsum()
+        daily_market_caps.fillna(value=0,inplace=True)
 
         daily_market_caps['Date'] = daily_market_caps['Date'].dt.strftime('%Y-%m-%d')
         prices['Date'] = prices['Date'].dt.strftime('%Y-%m-%d')
+
+        daily_market_caps['epoch_time'] = pd.to_datetime(daily_market_caps['Date']).astype(np.int64) // 10**6
+        prices['epoch_time'] = pd.to_datetime(prices['Date']).astype(np.int64) // 10**6
 
         performance = {'BasketPerformance':daily_market_caps.to_dict(orient='records'),
                        'EquityDetails':prices.to_dict(orient='records')}
