@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, HIGHCHARTS_MODULES} from 'angular-highcharts';
 import { PortfolioAnalyticsService } from './portfolio-analytics.service'
+import { AgGridModule } from 'ag-grid-angular';
 
 @Component({
   selector: 'app-portfolio-analytics',
@@ -11,13 +12,14 @@ import { PortfolioAnalyticsService } from './portfolio-analytics.service'
 export class PortfolioAnalyticsComponent implements OnInit {
   
   columnDefs=[];
-  rowData=[];
   chart;
+  chartData = [];
+  rowData: any;
 
   columnPriceDefs=[];
-  rowPriceData=[];
-  portfolioresults;
-  priceData=[];
+  portfolioresults: {};
+  priceData;
+  rowPriceData: any;
   performanceData=[];
 
 
@@ -36,21 +38,33 @@ export class PortfolioAnalyticsComponent implements OnInit {
   
     }
     this.portfolioanalytics.getPortfolioData(Basket)
-      .subscribe(result => {this.portfolioresults = result},
+      .subscribe(result => {this.portfolioresults = result, 
+                            this.addReturnData(),
+                            this.addPriceTableData()                   
+      },
               error => console.log(error))
-    console.log(this.portfolioresults)
   }
 
-  plotCumulativeReturnChart(){
+  addReturnData(){
 
-    var chartData = [[
-      1569888000000,
-      0.7537
-    ],
-    [
-      1569974400000,
-      0.7559
-    ]]
+    var BasketPerformance = this.portfolioresults['BasketPerformance']
+    var perfRows = []
+
+    for(var i=0; i<BasketPerformance.length; i++) {
+        
+        var epoch_time = BasketPerformance[i]['epoch_time']
+        var cum_return = BasketPerformance[i]['Cumulative_Return']
+        var chartDataPoint = [epoch_time,cum_return]
+        
+        var AsAtDate = BasketPerformance[i]['Date']
+        var daily_return = BasketPerformance[i]['Daily_Return']
+
+        this.chartData.push(chartDataPoint)
+        perfRows.push({Date: AsAtDate, Daily_Return:daily_return, Cumulative_Return:cum_return})
+
+    }
+
+    this.rowData = perfRows;
 
     this.chart = new Chart({
       chart: {
@@ -87,39 +101,45 @@ export class PortfolioAnalyticsComponent implements OnInit {
       series: [{
         type: 'area',
         name: 'USD to EUR',
-        data: chartData
+        data: this.chartData
         }]
       });
 
   }
 
+  addPriceTableData() {
+
+    var priceData = this.portfolioresults['EquityDetails']
+    var prices = []
+    for(var i=0; i<priceData.length; i++) {
+
+      var AsAtDate = priceData[i]['Date'];
+      var Ric = priceData[i]['Identifier']
+      var openPrice = priceData[i]['open']
+      var closePrice = priceData[i]['Close']
+
+      prices.push({Date: AsAtDate, Identifier: Ric, open:openPrice, Close: closePrice})
+    }
+    this.rowPriceData = prices;
+  }
+
+
   ngOnInit(): void {
-    this.getPortfolioData()
-    this.plotCumulativeReturnChart()
 
     this.columnDefs = [
-      {headerName: 'Date', field: 'Date' },
-      {headerName: 'Daily Return %', field: 'Daily_Return' },
-      {headerName: 'Cumulative Return %', field: 'Cumulative_Return'}
-    ];
-
-    this.rowData = [
-      { Date: '2019-10-01', Daily_Return: 0, Cumulative_Return: 35000 },
-      { Date: '2019-10-02', Daily_Return: 0.123, Cumulative_Return: 0.123 },
-      { Date: '2019-10-03', Daily_Return: 0.153, Cumulative_Return: 0.276 }
+      {headerName: 'Date', field: 'Date', filter: "agTextColumnFilter", resizable: true },
+      {headerName: 'Daily Return %', field: 'Daily_Return', filter: "agNumberColumnFilter", resizable: true },
+      {headerName: 'Cumulative Return %', field: 'Cumulative_Return', filter: "agNumberColumnFilter", resizable: true}
     ];
 
     this.columnPriceDefs = [
-      {headerName: 'Date', field: 'Date' },
-      {headerName:'Ric', field: 'Identifier'},
-      {headerName:'Open Price', field:'open'},
-      {headerName: 'Close Price', field: 'Close'}
+      {headerName: 'Date', field: 'Date', filter:"agTextColumnFilter",resizable: true },
+      {headerName:'Ric', field: 'Identifier', filter: "agTextColumnFilter",resizable: true},
+      {headerName:'Open Price', field:'open', filter: "agNumberColumnFilter",resizable: true},
+      {headerName: 'Close Price', field: 'Close', filter: "agNumberColumnFilter",resizable: true}
     ];
 
-    this.rowPriceData = [
-      { Date: '2019-10-01', Identifier: 'VFEM.L', open: 45.43, Close: 46.24 },
-      { Date: '2019-10-01', Identifier: 'VFEM.L', open: 45.43, Close: 46.24 },
-      { Date: '2019-10-01', Identifier: 'VFEM.L', open: 45.43, Close: 46.24 }
-    ];
+    this.getPortfolioData()
+
   }
 }

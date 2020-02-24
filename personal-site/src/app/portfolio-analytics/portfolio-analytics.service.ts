@@ -11,18 +11,9 @@ export class PortfolioAnalyticsService {
 
   constructor(private http: HttpClient) {}
 
-  public getPortfolioData(BasketDetails:{}) {
+  public getPortfolioData(BasketDetails:{}): Observable<any> {
     let portfolioAPI = 'https://c1h9ea61fi.execute-api.eu-west-1.amazonaws.com/1st';
-    console.log(portfolioAPI)
-    console.log(BasketDetails)
-    var results = this.http.post(portfolioAPI,BasketDetails).pipe(
-      map((response: Response) => {
-        return response.json();
-      }), catchError( error => {
-        return 'Something went wrong!';
-      })
-   )
-   console.log(results)
+    var results = this.http.post(portfolioAPI,BasketDetails)
   return results;
 }
 
