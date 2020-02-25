@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Chart, HIGHCHARTS_MODULES} from 'angular-highcharts';
+import { Chart } from 'angular-highcharts';
 import { PortfolioAnalyticsService } from './portfolio-analytics.service'
 import { AgGridModule } from 'ag-grid-angular';
 
@@ -22,20 +22,36 @@ export class PortfolioAnalyticsComponent implements OnInit {
   rowPriceData: any;
   performanceData=[];
 
+  vfem_weight=12;
+  vmid_weight=23;
+  vwrl_weight=66;
+
 
   constructor(private portfolioanalytics: PortfolioAnalyticsService) { }
 
   getPortfolioData(){
+    var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    var today = [year, month, day].join('-');
+
+    console.log(today)
     var Basket = {
       "BasketComposition": [
-          {"Identifier": "VFEM.L","Shares":10},
-          {"Identifier": "VWRL.L","Shares":40},
-          {"Identifier": "VMID.L","Shares":30}
+          {"Identifier": "VFEM.L","Shares":7},
+          {"Identifier": "VWRL.L","Shares":24},
+          {"Identifier": "VMID.L","Shares":28}
           ],
       "Currency": "GBP",
       "StartDate": "2019-10-01",
-      "EndDate": "2020-02-22"
-  
+      "EndDate": today
     }
     this.portfolioanalytics.getPortfolioData(Basket)
       .subscribe(result => {this.portfolioresults = result, 
@@ -65,7 +81,7 @@ export class PortfolioAnalyticsComponent implements OnInit {
     }
 
     this.rowData = perfRows;
-
+    
     this.chart = new Chart({
       chart: {
         zoomType: 'x'
@@ -122,7 +138,6 @@ export class PortfolioAnalyticsComponent implements OnInit {
     }
     this.rowPriceData = prices;
   }
-
 
   ngOnInit(): void {
 

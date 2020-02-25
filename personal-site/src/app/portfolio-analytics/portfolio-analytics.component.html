@@ -2,11 +2,38 @@
 	<div class="row">
 		<div class="col-md-12">
 			<h3>
-				h3. Lorem ipsum dolor sit amet.
+				Portfolio Analytics
 			</h3>
 			<p>
-				Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus. <em>Morbi commodo sodales nisi id sodales. Proin consectetur, nisi id commodo imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui.</em> Proin massa magna, vulputate nec bibendum nec, posuere nec lacus. <small>Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.</small>
+				This page is dedicated to the daily tracking of my ETF holdings.<br>
+				I am currently invested in the following three Vanguard ETFs which provide exposure to Global, UK, and Emerging Market equities:
 			</p>
+				<table class="table table-bordered">
+					<thead>
+					  <tr>
+						<th scope="col">Ric</th>
+						<th scope="col">Name</th>
+						<th scope="col">Start % Weighting</th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <tr>
+						<td><a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-emerging-markets-ucits-etf-usd-distributing">VFEM.L</a></td>
+						<td>Vanguard FTSE Emerging Markets</td>
+						<td>10</td>
+					  </tr>
+					  <tr>
+						<td><a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-250-ucits-etf-gbp-distributing">VMID.L</a></td>
+						<td>Vanguard FTSE 250 UCITS</td>
+						<td>25</td>
+					  </tr>
+					  <tr>
+						<td><a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-all-world-ucits-etf-usd-distributing">VWRL.L</a></td>
+						<td>Vanguard FTSE All World</td>
+						<td>65</td>
+					  </tr>
+					</tbody>
+				  </table>
 		</div>
 	</div>
 	<div class="row">
@@ -17,15 +44,15 @@
 	<div class="row">
 		<div class="col-md-6">
             <ag-grid-angular
-                style="width: 100%; height: 500px"
-                class="ag-theme-balham"
+                style="width: 100%; height: 250px"
+				class="ag-theme-balham"
                 [rowData]="rowData"
                 [columnDefs]="columnDefs">
             </ag-grid-angular>
 		</div>
 		<div class="col-md-6">
             <ag-grid-angular
-                style="width: 100%; height: 500px"
+                style="width: 100%; height: 250px"
 				class="ag-theme-balham"
                 [rowData]="rowPriceData"
 				[columnDefs]="columnPriceDefs">
