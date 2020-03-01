@@ -13,7 +13,9 @@ export class PortfolioAnalyticsComponent implements OnInit {
   
   columnDefs=[];
   chart;
+  dailychart;
   chartData = [];
+  daily_return_chart_data=[];
   rowData: any;
 
   columnPriceDefs=[];
@@ -22,9 +24,9 @@ export class PortfolioAnalyticsComponent implements OnInit {
   rowPriceData: any;
   performanceData=[];
 
-  vfem_weight=12;
-  vmid_weight=23;
-  vwrl_weight=66;
+  vfem_weight;
+  vmid_weight;
+  vwrl_weight;
 
 
   constructor(private portfolioanalytics: PortfolioAnalyticsService) { }
@@ -62,6 +64,19 @@ export class PortfolioAnalyticsComponent implements OnInit {
   }
 
   addReturnData(){
+    var currentWeightings = this.portfolioresults['Current_Weightings']
+
+    for (var item=0; item<currentWeightings.length; item++){
+        if (currentWeightings[item]['Identifier']=='VFEM.L'){
+            this.vfem_weight=currentWeightings[item]['Weightings'].toFixed(2)
+        }
+        if (currentWeightings[item]['Identifier']=='VWRL.L'){
+          this.vwrl_weight=currentWeightings[item]['Weightings'].toFixed(2)
+        }
+        if (currentWeightings[item]['Identifier']=='VMID.L'){
+          this.vmid_weight=currentWeightings[item]['Weightings'].toFixed(2)
+        }
+    }
 
     var BasketPerformance = this.portfolioresults['BasketPerformance']
     var perfRows = []
@@ -74,8 +89,10 @@ export class PortfolioAnalyticsComponent implements OnInit {
         
         var AsAtDate = BasketPerformance[i]['Date']
         var daily_return = BasketPerformance[i]['Daily_Return']
+        var dailyChartDataPoint = [epoch_time,daily_return]
 
         this.chartData.push(chartDataPoint)
+        this.daily_return_chart_data.push(dailyChartDataPoint)
         perfRows.push({Date: AsAtDate, Daily_Return:daily_return, Cumulative_Return:cum_return})
 
     }
@@ -116,10 +133,49 @@ export class PortfolioAnalyticsComponent implements OnInit {
       },
       series: [{
         type: 'area',
-        name: 'USD to EUR',
+        name: 'portfolio',
         data: this.chartData
         }]
       });
+
+      this.dailychart = new Chart({
+        chart: {
+          zoomType: 'x'
+        },
+        title: {
+          text: 'ETF Portfolio Daily Return'
+        },
+        xAxis: {
+          type: 'datetime'
+        },
+        yAxis: {
+          title: {
+            text: '% Change'
+          }
+        },
+        legend: {
+          enabled: false
+        },
+        plotOptions: {
+          area: {
+            marker: {
+              radius: 2
+            },
+            lineWidth: 1,
+            states: {
+              hover: {
+                lineWidth: 1
+              }
+            },
+            threshold: null
+          }
+        },
+        series: [{
+          type: 'line',
+          name: 'portfolio',
+          data: this.daily_return_chart_data
+          }]
+        });
 
   }
 
@@ -141,6 +197,10 @@ export class PortfolioAnalyticsComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.vfem_weight = 0.0
+    this.vmid_weight = 0.0
+    this.vwrl_weight = 0.0
+
     this.columnDefs = [
       {headerName: 'Date', field: 'Date', filter: "agTextColumnFilter", resizable: true },
       {headerName: 'Daily Return %', field: 'Daily_Return', filter: "agNumberColumnFilter", resizable: true },
@@ -153,6 +213,84 @@ export class PortfolioAnalyticsComponent implements OnInit {
       {headerName:'Open Price', field:'open', filter: "agNumberColumnFilter",resizable: true},
       {headerName: 'Close Price', field: 'Close', filter: "agNumberColumnFilter",resizable: true}
     ];
+
+    this.chart = new Chart({
+      chart: {
+        zoomType: 'x'
+      },
+      title: {
+        text: 'ETF Portfolio Cumulative Performance to Date'
+      },
+      xAxis: {
+        type: 'datetime'
+      },
+      yAxis: {
+        title: {
+          text: '% Change'
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      plotOptions: {
+        area: {
+          marker: {
+            radius: 2
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1
+            }
+          },
+          threshold: null
+        }
+      },
+      series: [{
+        type: 'area',
+        name: 'portfolio',
+        data: []
+        }]
+      });
+
+      this.dailychart = new Chart({
+        chart: {
+          zoomType: 'x'
+        },
+        title: {
+          text: 'ETF Portfolio Daily Return'
+        },
+        xAxis: {
+          type: 'datetime'
+        },
+        yAxis: {
+          title: {
+            text: '% Change'
+          }
+        },
+        legend: {
+          enabled: false
+        },
+        plotOptions: {
+          area: {
+            marker: {
+              radius: 2
+            },
+            lineWidth: 1,
+            states: {
+              hover: {
+                lineWidth: 1
+              }
+            },
+            threshold: null
+          }
+        },
+        series: [{
+          type: 'line',
+          name: 'portfolio',
+          data: []
+          }]
+        });
 
     this.getPortfolioData()
 

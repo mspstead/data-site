@@ -1,3 +1,4 @@
+<div ng-view autoscroll></div>
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
@@ -5,7 +6,7 @@
 				Portfolio Analytics
 			</h3>
 			<p>
-				This page is dedicated to the daily tracking of my ETF holdings.<br>
+				This page is dedicated to the daily tracking of my ETF holdings. It utilises the <a href="https://www.worldtradingdata.com/">World Trading Data API</a> for pricing data and an AWS lambda function wrapped in AWS API gateway to calculate the cumulative portfolio performance and daily returns.<br>
 				I am currently invested in the following three Vanguard ETFs which provide exposure to Global, UK, and Emerging Market equities:
 			</p>
 				<table class="table table-bordered">
@@ -14,6 +15,7 @@
 						<th scope="col">Ric</th>
 						<th scope="col">Name</th>
 						<th scope="col">Start % Weighting</th>
+						<th scope="col">Curr. % Weighting</th>
 					  </tr>
 					</thead>
 					<tbody>
@@ -21,16 +23,19 @@
 						<td><a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-emerging-markets-ucits-etf-usd-distributing">VFEM.L</a></td>
 						<td>Vanguard FTSE Emerging Markets</td>
 						<td>10</td>
+						<td>{{ vfem_weight }}</td>
 					  </tr>
 					  <tr>
 						<td><a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-250-ucits-etf-gbp-distributing">VMID.L</a></td>
 						<td>Vanguard FTSE 250 UCITS</td>
 						<td>25</td>
+						<td>{{ vmid_weight }}</td>
 					  </tr>
 					  <tr>
 						<td><a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-all-world-ucits-etf-usd-distributing">VWRL.L</a></td>
 						<td>Vanguard FTSE All World</td>
 						<td>65</td>
+						<td>{{ vwrl_weight }}</td>
 					  </tr>
 					</tbody>
 				  </table>
@@ -39,6 +44,11 @@
 	<div class="row">
 		<div class="col-md-12">
             <div [chart]="chart"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+            <div [chart]="dailychart"></div>
 		</div>
 	</div>
 	<div class="row">
