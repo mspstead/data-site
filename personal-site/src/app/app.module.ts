@@ -6,12 +6,15 @@ import { HttpClientModule } from '@angular/common/http'
 import { AppRoutingModule, routingComponents} from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AgGridModule } from 'ag-grid-angular';
-import { ChartModule } from 'angular-highcharts';
+import { ChartModule, HIGHCHARTS_MODULES } from 'angular-highcharts';
+import { VisitedmapComponent } from './visitedmap/visitedmap.component';
+import * as highmaps from 'highcharts/modules/map.src';
 
 @NgModule({
   declarations: [
     AppComponent,
-    routingComponents
+    routingComponents,
+    VisitedmapComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +24,7 @@ import { ChartModule } from 'angular-highcharts';
     ChartModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [{provide: HIGHCHARTS_MODULES, useFactory: () => [highmaps]}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
