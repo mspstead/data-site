@@ -200,9 +200,9 @@ export class PortfolioAnalyticsComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.vfem_weight = 0.0
-    this.vmid_weight = 0.0
-    this.vwrl_weight = 0.0
+    this.vfem_weight = '...'
+    this.vmid_weight = '...'
+    this.vwrl_weight = '...'
 
     this.columnDefs = [
       {headerName: 'Date', field: 'Date', filter: "agTextColumnFilter", resizable: true },

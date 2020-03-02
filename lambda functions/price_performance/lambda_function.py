@@ -5,8 +5,7 @@ def lambda_handler(event, context):
 
     BasketComposition = event.get('BasketComposition')
     Currency = event.get('Currency')
-    #api_key = os.environ['API_KEY']
-    api_key='QGXhjiTiS0bcZSkW935sXu0B69xYutrqvUe5Bd2mfFJoII9qyOSrOB1V1XGM'
+    api_key = os.environ['API_KEY']
     start_date = event.get('StartDate')
     end_date = event.get('EndDate')
 
@@ -15,7 +14,7 @@ def lambda_handler(event, context):
 
     return results
 
-event = {
+example_event = {
     "BasketComposition": [
         {"Identifier": "VFEM.L","Shares":10},
         {"Identifier": "VWRL.L","Shares":40},
@@ -26,5 +25,3 @@ event = {
     "EndDate": "2020-02-22"
 
 }
-x = lambda_handler(event,'')
-print(x)
