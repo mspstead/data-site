@@ -12,8 +12,8 @@ import { AgGridModule } from 'ag-grid-angular';
 export class PortfolioAnalyticsComponent implements OnInit {
   
   columnDefs=[];
-  chart;
-  dailychart;
+  chart: Chart;
+  dailychart: Chart;
   chartData = [];
   daily_return_chart_data=[];
   rowData: any;
@@ -32,6 +32,10 @@ export class PortfolioAnalyticsComponent implements OnInit {
   constructor(private portfolioanalytics: PortfolioAnalyticsService) { }
 
   getPortfolioData(){
+
+    this.chart.ref$.subscribe((res:any)=>{ res.showLoading(); })
+    this.dailychart.ref$.subscribe((res:any)=>{ res.showLoading(); })
+
     var d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -176,7 +180,6 @@ export class PortfolioAnalyticsComponent implements OnInit {
           data: this.daily_return_chart_data
           }]
         });
-
   }
 
   addPriceTableData() {
