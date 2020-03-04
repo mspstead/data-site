@@ -25,7 +25,7 @@ export class VisitedmapComponent implements OnInit {
                 borderColor:'#FFFFF'
             },
             title: {
-              text: 'Countries Travelled'
+              text: 'Countries Visited'
           },
           legend: {
               enabled: false

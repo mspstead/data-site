@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'angular-highcharts';
 import { PortfolioAnalyticsService } from './portfolio-analytics.service'
-import { AgGridModule } from 'ag-grid-angular';
 
 @Component({
   selector: 'app-portfolio-analytics',
