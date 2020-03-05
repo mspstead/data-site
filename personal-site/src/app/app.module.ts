@@ -9,12 +9,14 @@ import { AgGridModule } from 'ag-grid-angular';
 import { ChartModule, HIGHCHARTS_MODULES } from 'angular-highcharts';
 import { VisitedmapComponent } from './visitedmap/visitedmap.component';
 import * as highmaps from 'highcharts/modules/map.src';
+import { PortfolioOptimisationComponent } from './portfolio-optimisation/portfolio-optimisation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     routingComponents,
-    VisitedmapComponent
+    VisitedmapComponent,
+    PortfolioOptimisationComponent
   ],
   imports: [
     BrowserModule,
