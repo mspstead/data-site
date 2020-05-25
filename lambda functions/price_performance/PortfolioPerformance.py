@@ -1,7 +1,8 @@
 import requests as req
-import datetime as dt
+import time
 import pandas as pd
 import numpy as np
+import datetime as dt
 
 class Investment_Analysis:
 
@@ -54,37 +55,45 @@ class Investment_Analysis:
         return rates_df
 
     def _getEquitiesHistory(self):
-        """Uses the worldtradingdata api to get pricing data for each equity returns a dataframe of prices"""
+        """Uses the alphavantage api to get pricing data for each equity returns a dataframe of prices"""
 
-        historical_price_api = "https://api.worldtradingdata.com/api/v1/history"
-        latest_info_api = "https://api.worldtradingdata.com/api/v1/stock"
+        price_api = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-historical-data"
+        currency_url = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary"
+
+        headers = {
+            'x-rapidapi-host': "apidojo-yahoo-finance-v1.p.rapidapi.com",
+            'x-rapidapi-key': self.api_key
+        }
+
+        pattern = '%Y-%m-%d'
+        epoch_start_time = int(time.mktime(time.strptime(self.start_date, pattern)))
+        epoch_end_time = int(time.mktime(time.strptime(self.end_date, pattern)))
 
         dfs = []
         for id in self.BasketComposition:
+
             identifier = id.get('Identifier')
             shares = id.get('Shares')
 
-            params = {
-                'symbol': identifier,
-                'api_token': self.api_key,
-                'date_from':self.start_date,
-                'date_to':self.end_date
-            }
+            params = {"frequency": "1d",
+                      "filter": "history",
+                      "period1": epoch_start_time,
+                      "period2": epoch_end_time,
+                      "symbol": identifier}
 
-            equity_history = pd.DataFrame.from_dict(req.get(historical_price_api,params=params).json().get('history'),orient='index')
-            currency_code = req.get(latest_info_api,params=params).json().get('data')[0].get('currency')
+            currency_params = {"region":"US","symbol":identifier}
 
+            equity_history = pd.DataFrame.from_dict(req.get(price_api,headers=headers,params=params).json().get("prices"))
+            currency_code = req.get(currency_url,headers=headers,params=currency_params).json().get("price").get("currency")
             prices_df = equity_history
             prices_df['Identifier'] = identifier
             prices_df['Shares'] = shares
             prices_df['CurrencyCode'] = currency_code
-            prices_df.reset_index(inplace=True)
-            prices_df = prices_df.rename(columns={'index':'Date','close':'Close'})
-
-            prices_df['Date'] = pd.to_datetime(prices_df['Date'])
+            prices_df = prices_df[['date','close','Identifier', 'Shares', 'CurrencyCode','open']]
+            prices_df = prices_df.rename(columns={'date':'Date','close':'Close'})
+            prices_df['Date'] = pd.to_datetime(prices_df['Date'],unit='s').dt.date.astype('datetime64')
             prices_df['Close'] = prices_df['Close'].astype(float)
-
-            dfs.append(prices_df)
+            dfs.append(prices_df[1:])
 
         final_prices_df = pd.concat(dfs)
 
@@ -96,12 +105,10 @@ class Investment_Analysis:
 
         fx_rates = self._getHistoricalFXRates()
         prices = self._getEquitiesHistory()
-
+        print(prices[prices['Date']==prices['Date'].max])
         constituents = pd.merge(prices,fx_rates,'inner',left_on=['Date','CurrencyCode'],right_on=['CloseDate','CurrencyCode'])
-        constituents = constituents.drop(['CloseDate','open', 'high', 'low','volume'],axis=1)
-
+        constituents = constituents.drop(['CloseDate'],axis=1)
         constituents['constituent_mcap'] = constituents['Close'] * constituents['FXRate'] * constituents['Shares']
-
         # Remove marketcap dates with missing prices using the constituent count for each of those days
         counts_df = pd.DataFrame(data=constituents.groupby('Date')['Identifier'].count())
         counts_df = counts_df.reset_index()
@@ -128,12 +135,11 @@ class Investment_Analysis:
 
         daily_market_caps = daily_market_caps.sort_values(by='epoch_time', ascending=False)
         prices = prices.sort_values(by='epoch_time', ascending=False)
-
         current_day_mcap = daily_market_caps.iloc[0]['Total_Market_Cap']
         final_weightings = constituents.sort_values(by='Date', ascending=False)
         final_weightings['Weightings'] = (final_weightings.iloc[0:3]['constituent_mcap']/current_day_mcap)*100
         final_weightings = final_weightings.iloc[0:3][['Identifier','Weightings']]
-
+        print(daily_market_caps)
         performance = {'BasketPerformance':daily_market_caps.to_dict(orient='records'),
                        'EquityDetails':prices.to_dict(orient='records'),
                        'Current_Weightings':final_weightings.to_dict(orient='records')}
