@@ -12,7 +12,7 @@ export class PortfolioAnalyticsService {
   constructor(private http: HttpClient) {}
 
   public getPortfolioData(BasketDetails:{}): Observable<any> {
-    let portfolioAPI = 'https://c1h9ea61fi.execute-api.eu-west-1.amazonaws.com/1st';
+    let portfolioAPI = 'https://c1h9ea61fi.execute-api.eu-west-1.amazonaws.com/deployment';
     var results = this.http.post(portfolioAPI,BasketDetails)
   return results;
 }

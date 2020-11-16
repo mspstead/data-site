@@ -101,6 +101,7 @@ export class PortfolioAnalyticsComponent implements OnInit {
     }
 
     this.rowData = perfRows;
+    console.log(perfRows)
     
     this.chart = new Chart({
       chart: {
