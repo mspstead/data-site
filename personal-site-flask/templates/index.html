@@ -2,12 +2,24 @@
 
 {% block content %}
 
-{% for post in posts %}
-    <a href="{{ url_for('post', name=post.path.replace('posts/', '')) }}">
-        {{ post.title }}
-    </a>
-    <small>{{ post.date }}</small>
-    <br>
-{% endfor %}
+<section class="blog-list px-3 py-5 p-md-5">
+    <div class="container">
+        {% for post in posts %}
+            <small></small>
+            <br>
+            <div class="item mb-5">
+                <div class="media">
+                    <img class="mr-3 img-fluid post-thumb d-none d-md-flex" style="width:10%; height:10%" src={{ post.img }} alt="image">
+                    <div class="media-body">
+                        <h3 class="title mb-1"><a href="{{ url_for('post', name=post.path.replace('posts/', '')) }}">{{ post.title }}</a></h3>
+                        <div class="meta mb-1"><span class="date">{{ post.date }} </span><span class="time"> {{ post.read }}</span></div>
+                        <div class="intro">{{ post.intro }}</div>
+                        <a class="more-link" href="{{ url_for('post', name=post.path.replace('posts/', '')) }}">Read more &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
 
 {% endblock %}

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-{{ post.html|safe }}
-{{ post.title }}
-{{ post.date }}
-
+<link rel="stylesheet" href="{{ url_for('pygments_css') }}">
+<a class="btn btn-link" href="/" role="button"><- Back</a>
+<div class="col">
+    {{ post.html|safe }}
+    {{ post.date }}
+</div>
 {% endblock %}
