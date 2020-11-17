@@ -1,3 +1,3 @@
-# data-site
-Repo for my personal data analytics projects website.
+# blog
+Repo for my personal blog.
 http://www.mspstead.com/
