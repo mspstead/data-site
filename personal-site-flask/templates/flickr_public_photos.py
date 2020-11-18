@@ -11,7 +11,7 @@ class Flickr_Grabber:
     def get_public_user_photos(self):
         """
         Returns all a user's public photos and the photo location data.
-        :return: [{url:url,lat:lat,lon:lon}]
+        :return: [{url:str,lat:str,lon:str, dateTaken:str}]
         :return: [] on failure
         """
 
@@ -20,36 +20,58 @@ class Flickr_Grabber:
                            +"&user_id="+\
                             self.flickr_user_id\
                            +"&format=json&nojsoncallback=1"
-        try:
+        #try:
 
-            public_photos = req.get(flickr_public_photos_url).json().get('photos')
-            num_pages = public_photos.get('pages')
-            photos = []
+        public_photos = req.get(flickr_public_photos_url).json().get('photos')
+        num_pages = public_photos.get('pages')
 
-            if num_pages<=1:
+        photos = []
+
+        if num_pages==1:
+
+            photo_list = public_photos.get('photo')
+
+            for photo in photo_list:
+                photos.append(self.__photo_details(photo))
+
+        else:
+
+            for i in range(1,num_pages+1):
+
+                page_number = "&page="+str(i)
+                public_photos = req.get(flickr_public_photos_url+page_number).json().get('photos')
 
                 photo_list = public_photos.get('photo')
 
                 for photo in photo_list:
-                    id = str(photo.get('id'))
-                    secret = str(photo.get('secret'))
-                    server = str(photo.get('server'))
-                    farm = str(photo.get('farm'))
-                    photo_url = self.__photoUrlBuilder(id,server,farm,secret)
-                    photo_dict = self.__get_photo_location(id,secret)
-                    photo_dict['url'] = photo_url
-                    photos.append(photo_dict)
+                    photos.append(self.__photo_details(photo))
 
-            return photos
+        return photos
 
-        except:
-            return []
+        #except:
+            #return []
 
 
-    def __get_photo_location(self,photo_id,photo_secret):
+    def __photo_details(self,photo):
+        """
+        Get individual details for each photo
+        :return: Dict Object format {url:str,lat:str,lon:str,dateTaken:str}
+        """
+
+        id = str(photo.get('id'))
+        secret = str(photo.get('secret'))
+        server = str(photo.get('server'))
+        farm = str(photo.get('farm'))
+        photo_url = self.__photoUrlBuilder(id, server, farm, secret)
+        photo_dict = self.__get_photo_info(id, secret)
+        photo_dict['url'] = photo_url
+
+        return photo_dict
+
+    def __get_photo_info(self,photo_id,photo_secret):
         """
         Method to grab a photos location data using the flickr get.info API
-        :return: str(URL)
+        :return: {lat:str,lon:str,dateTaken:str}
         """
         flickr_info_url = "https://www.flickr.com/services/rest/?method=flickr.photos.getInfo&"\
                               +"api_key="+self.flickr_api_key\
@@ -57,15 +79,23 @@ class Flickr_Grabber:
                               +"&secret="+photo_secret\
                               +"&format=json&nojsoncallback=1"
         try:
-            photo_location = req.get(flickr_info_url).json().get('photo').get('location')
-            return {'lat':photo_location.get('latitude'), 'lon':photo_location.get('longitude')}
+            photo_info = req.get(flickr_info_url).json().get('photo')
+            photo_location = photo_info.get('location')
+            dateTaken = photo_info.get("dates").get("taken")
+            return {'lat':photo_location.get('latitude'), 'lon':photo_location.get('longitude'),'dateTaken':dateTaken}
         except:
-            return {'lat':None,'lon':None}
+            return {'lat':None,'lon':None,'dateTaken':None}
 
     def __photoUrlBuilder(self,id,server,farm,secret):
         """
         Method to construct and return the url string for a particular photo.
-        :return: str(URL)
+        :return: URL:str
         """
         photo_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + ".jpg"  # compile url
         return photo_url
+
+
+flk = Flickr_Grabber('76ea06081c719ea20e95f2d608049fc2','191088024@N02')
+res = flk.get_public_user_photos()
+print(len(res))
+print(res)
