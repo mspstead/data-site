@@ -21,6 +21,10 @@ def posts():
     posts.sort(key=lambda item:item['date'], reverse=True)
     return render_template('index.html', posts=posts)
 
+@app.route("/visitedcountries")
+def visited_countries():
+    return render_template('countries.html')
+
 @app.route('/<name>/')
 def post(name):
     path = '{}/{}'.format(POST_DIR, name)
