@@ -28,6 +28,10 @@ def posts():
     posts.sort(key=lambda item:item['date'], reverse=True)
     return render_template('index.html', posts=posts)
 
+@app.route("/about")
+def about_me():
+    return render_template('about.html')
+
 @app.route("/visitedcountries")
 def visited_countries():
     from models import MapPhotos

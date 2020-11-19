@@ -40,7 +40,7 @@
 					    <a class="nav-link" href="/"><i class="fa fa-home"></i> Blog Home</a>
 					</li>
 					<li class="nav-item">
-					    <a class="nav-link" href="/first"><i class="fa fa-user"></i> About Me</a>
+					    <a class="nav-link" href="/about"><i class="fa fa-user"></i> About Me</a>
 					</li>
 					<!--<li class="nav-item">
 					    <a class="nav-link" routerLink="blog/fitbit"><i class="fa fa-heartbeat"></i> Fitbit Analytics</a>
@@ -62,16 +62,10 @@
 			    <h3 class="heading">Tech Blog</h3>
 			  </div><!--//container-->
 		</section>
-		<div class="container">
-  			<div class="row">
-				<div class="col-lg">
-					{% block content %}
+			{% block content %}
 
-					{% endblock %}
-				</div>
-			</div>
-		</div>
-    	</div><!--//main-wrapper-->
+			{% endblock %}
+	</div><!--//main-wrapper-->
     <!-- Javascript -->
     <script src="static/plugins/jquery-3.5.1.min.js"></script>
     <script src="static/plugins/popper.min.js"></script>

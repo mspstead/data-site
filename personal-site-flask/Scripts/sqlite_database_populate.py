@@ -81,8 +81,8 @@ def close_connection(connection):
 if __name__ == '__main__':
 
     database_path = '/Users/mike/Documents/Website/personal-site-flask/blog-site.db'
-    flickr_API_KEY = ""
-    flickr_user_id = ""
+    flickr_API_KEY = "76ea06081c719ea20e95f2d608049fc2"
+    flickr_user_id = "191088024@N02"
 
     conn = create_db(database_path)
     if conn is not None:
