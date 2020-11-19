@@ -1,5 +1,6 @@
 import requests as req
-import time
+import sys
+
 
 class Flickr_Grabber:
 
@@ -11,7 +12,7 @@ class Flickr_Grabber:
     def get_public_user_photos(self):
         """
         Returns all a user's public photos and the photo location data.
-        :return: [{url:str,lat:str,lon:str, dateTaken:str}]
+        :return: [{url:str,lat:float/None,lon:float/None, dateTaken:float/None}]
         :return: [] on failure
         """
 
@@ -20,6 +21,7 @@ class Flickr_Grabber:
                            +"&user_id="+\
                             self.flickr_user_id\
                            +"&format=json&nojsoncallback=1"
+
         try:
 
             public_photos = req.get(flickr_public_photos_url).json().get('photos')
@@ -48,14 +50,16 @@ class Flickr_Grabber:
 
             return photos
 
-        except:
+        except AttributeError as e:
+            print(e)
+            print('API KEY or User Key incorrect.')
             return []
 
 
     def __photo_details(self,photo):
         """
         Get individual details for each photo
-        :return: Dict Object format {url:str,lat:str,lon:str,dateTaken:str}
+        :return: Dict Object format {url:str,lat:float/None,lon:float/None,dateTaken:str/None}
         """
 
         id = str(photo.get('id'))
@@ -71,7 +75,7 @@ class Flickr_Grabber:
     def __get_photo_info(self,photo_id,photo_secret):
         """
         Method to grab a photos location data using the flickr get.info API
-        :return: {lat:str,lon:str,dateTaken:str}
+        :return: {lat:float,lon:float,dateTaken:str}
         """
         flickr_info_url = "https://www.flickr.com/services/rest/?method=flickr.photos.getInfo&"\
                               +"api_key="+self.flickr_api_key\
@@ -79,11 +83,17 @@ class Flickr_Grabber:
                               +"&secret="+photo_secret\
                               +"&format=json&nojsoncallback=1"
         try:
+
             photo_info = req.get(flickr_info_url).json().get('photo')
             photo_location = photo_info.get('location')
             dateTaken = photo_info.get("dates").get("taken")
-            return {'lat':photo_location.get('latitude'), 'lon':photo_location.get('longitude'),'dateTaken':dateTaken}
-        except:
+
+            return {'lat':float(photo_location.get('latitude')),
+                    'lon':float(photo_location.get('longitude')),
+                    'dateTaken':dateTaken}
+
+        except AttributeError as e:
+            print('Missing location or date for photoid: {}, photosecret: {}'.format(photo_id,photo_secret))
             return {'lat':None,'lon':None,'dateTaken':None}
 
     def __photoUrlBuilder(self,id,server,farm,secret):
@@ -93,9 +103,3 @@ class Flickr_Grabber:
         """
         photo_url = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + ".jpg"  # compile url
         return photo_url
-
-
-flk = Flickr_Grabber('76ea06081c719ea20e95f2d608049fc2','191088024@N02')
-res = flk.get_public_user_photos()
-print(len(res))
-print(res)
