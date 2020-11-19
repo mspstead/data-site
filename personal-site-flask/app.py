@@ -2,18 +2,25 @@ import sys
 from flask import Flask, render_template
 from flask_flatpages import FlatPages, pygments_style_defs
 from flask_frozen import Freezer
+from flask_sqlalchemy import SQLAlchemy
 
 DEBUG = True
+
+app = Flask(__name__)
+
 FLATPAGES_AUTO_RELOAD = DEBUG
 FLATPAGES_EXTENSION = '.md'
 FLATPAGES_MARKDOWN_EXTENSIONS = ['fenced_code','codehilite']
 FLATPAGES_ROOT = 'content'
 POST_DIR = 'posts'
 
-app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog-site.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 flatpages = FlatPages(app)
 freezer = Freezer(app)
 app.config.from_object(__name__)
+db = SQLAlchemy(app)
 
 @app.route("/")
 def posts():
@@ -23,7 +30,11 @@ def posts():
 
 @app.route("/visitedcountries")
 def visited_countries():
-    return render_template('countries.html')
+    from models import MapPhotos
+    map_photos = MapPhotos.query.all()
+    photos = [{"URL":photo.PhotoURL, "Lat":photo.Latitude,
+               "Lon":photo.Longitude, "Date":photo.DateTaken} for photo in map_photos]
+    return render_template('countries.html',photos=photos)
 
 @app.route('/<name>/')
 def post(name):
