@@ -10,8 +10,6 @@ function createMap(photos) {
 
     var cameraIcon = L.divIcon({
         html: '<i class="fa fa-camera fa-3x"></i>'//, // size of the icon
-        //iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
-        //popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
     });
 
     var markerClusters = L.markerClusterGroup();
@@ -23,7 +21,11 @@ function createMap(photos) {
         var lon = photos[i].Lon;
         var date = photos[i].Date;
 
-        var marker = L.marker([lat,lon],{icon: cameraIcon}).bindPopup('<img src='+ url +' height="80%" width="90%"/><h3>'+ date +'</h3>');
+        var markerHtml = '<a href='+url+' target="_blank"><img src='+url+' height="100%" width="100%"/></a><h5>Time of visit:<br>'+ date +'</h5>'
+        var marker = L.marker([lat,lon],
+            {icon: cameraIcon})
+            .bindPopup(markerHtml);
+
         markerClusters.addLayer(marker);
 
     }
