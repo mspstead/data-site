@@ -20,36 +20,36 @@ class Flickr_Grabber:
                            +"&user_id="+\
                             self.flickr_user_id\
                            +"&format=json&nojsoncallback=1"
-        #try:
+        try:
 
-        public_photos = req.get(flickr_public_photos_url).json().get('photos')
-        num_pages = public_photos.get('pages')
+            public_photos = req.get(flickr_public_photos_url).json().get('photos')
+            num_pages = public_photos.get('pages')
 
-        photos = []
+            photos = []
 
-        if num_pages==1:
-
-            photo_list = public_photos.get('photo')
-
-            for photo in photo_list:
-                photos.append(self.__photo_details(photo))
-
-        else:
-
-            for i in range(1,num_pages+1):
-
-                page_number = "&page="+str(i)
-                public_photos = req.get(flickr_public_photos_url+page_number).json().get('photos')
+            if num_pages==1:
 
                 photo_list = public_photos.get('photo')
 
                 for photo in photo_list:
                     photos.append(self.__photo_details(photo))
 
-        return photos
+            else:
 
-        #except:
-            #return []
+                for i in range(1,num_pages+1):
+
+                    page_number = "&page="+str(i)
+                    public_photos = req.get(flickr_public_photos_url+page_number).json().get('photos')
+
+                    photo_list = public_photos.get('photo')
+
+                    for photo in photo_list:
+                        photos.append(self.__photo_details(photo))
+
+            return photos
+
+        except:
+            return []
 
 
     def __photo_details(self,photo):
