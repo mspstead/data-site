@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from flask_flatpages import FlatPages, pygments_style_defs
 from flask_frozen import Freezer
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 
 DEBUG = True
 
@@ -24,27 +25,46 @@ db = SQLAlchemy(app)
 
 @app.route("/")
 def posts():
+    title = "Blog Home"
     posts = [p for p in flatpages if p.path.startswith(POST_DIR)]
     posts.sort(key=lambda item:item['date'], reverse=True)
-    return render_template('index.html', posts=posts)
+    return render_template('index.html', posts=posts, title=title)
 
 @app.route("/about")
 def about_me():
-    return render_template('about.html')
+    title = "About Me"
+    return render_template('about.html',title=title)
+
+@app.route("/portfolio")
+def portfolio():
+    title = "Portfolio Analytics"
+    basket_composition = {
+        "BasketComposition": [
+            {"Identifier": "VFEM.L", "Shares": 10},
+            {"Identifier": "VWRL.L", "Shares": 40},
+            {"Identifier": "VMID.L", "Shares": 30}
+        ],
+        "Currency": "GBP",
+        "StartDate": "2019-10-01",
+        "EndDate": datetime.datetime.today().strftime("%Y-%m-%d")
+    }
+    return render_template('portfolio.html',title=title, basket_composition=basket_composition)
 
 @app.route("/visitedcountries")
 def visited_countries():
     from models import MapPhotos
+    title = "Country Tracker"
     map_photos = MapPhotos.query.all()
     photos = [{"URL":photo.PhotoURL, "Lat":photo.Latitude,
                "Lon":photo.Longitude, "Date":photo.DateTaken} for photo in map_photos]
-    return render_template('countries.html',photos=photos)
+    return render_template('countries.html',photos=photos, title=title)
 
 @app.route('/<name>/')
 def post(name):
+    title = "Tech Blog"
     path = '{}/{}'.format(POST_DIR, name)
     post = flatpages.get_or_404(path)
-    return render_template('post.html', post=post)
+    return render_template('post.html', post=post, title=title)
 
 @app.route('/pygments.css')
 def pygments_css():
