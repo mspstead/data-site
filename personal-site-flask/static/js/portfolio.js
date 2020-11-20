@@ -1,6 +1,4 @@
 function get_performance(composition){
-    console.log(JSON.stringify(composition))
-
     var api = "https://c1h9ea61fi.execute-api.eu-west-1.amazonaws.com/deployment"
     var details = {
         method: 'POST',
@@ -107,7 +105,6 @@ function basket_performance(basket_data){
 
     for (var i=0; i<current_weightings.length; i=i+1){
         id = current_weightings[i]["Identifier"]
-        console.log(id)
         weighting = current_weightings[i]["Weightings"]
         document.getElementById(id).innerHTML = weighting
     }
