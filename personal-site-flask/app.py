@@ -66,7 +66,7 @@ def post(name):
     post = flatpages.get_or_404(path)
     return render_template('post.html', post=post, title=title)
 
-@app.route('/pygments.css')
+@app.route('/pygments_css')
 def pygments_css():
     return pygments_style_defs('friendly'), 200, {'Content-Type': 'text/css'}
 
