@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<body onload='get_performance({{ basket_composition | tojson }})'>
+<section class="blog-list px-3 py-5 p-md-5">
+    <div class="main-wrapper">
+	<div class="row">
+		<div class="col-md-12">
+			<h3>
+				Portfolio Analytics
+			</h3>
+			<p>
+				This page is dedicated to the daily tracking of my ETF holdings. It utilises Yahoo Finance for pricing data and an <a href="https://github.com/mspstead/data-site/tree/data-site-first-branch/lambda%20functions/price_performance">AWS lambda function</a> wrapped in AWS API gateway to calculate the cumulative portfolio performance and daily returns.<br>
+				I am currently invested in the following three Vanguard ETFs which provide exposure to Global, UK, and Emerging Market equities:
+			</p>
+				<table class="table table-bordered">
+					<thead>
+					  <tr>
+						<th scope="col">Ric</th>
+						<th scope="col">Name</th>
+						<th scope="col">Start % Weighting</th>
+						<th scope="col">Curr. % Weighting</th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <tr>
+						<td><a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-emerging-markets-ucits-etf-usd-distributing">VFEM.L</a></td>
+						<td>Vanguard FTSE Emerging Markets</td>
+						<td>10</td>
+						<td id="VFEM.L">Loading...</td>
+					  </tr>
+					  <tr>
+						<td><a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-250-ucits-etf-gbp-distributing">VMID.L</a></td>
+						<td>Vanguard FTSE 250 UCITS</td>
+						<td>25</td>
+						<td id="VMID.L">Loading...</td>
+					  </tr>
+					  <tr>
+						<td><a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-all-world-ucits-etf-usd-distributing">VWRL.L</a></td>
+						<td>Vanguard FTSE All World</td>
+						<td>65</td>
+						<td id="VWRL.L">Loading...</td>
+					  </tr>
+					</tbody>
+				  </table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+            <figure class="highcharts-figure">
+                <div id="chart1"></div>
+            </figure>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+            <figure class="highcharts-figure">
+                <div id="chart2"></div>
+            </figure>
+		</div>
+	</div>
+    </div>
+</section>
+</body>
+<script type="text/javascript" src="static/js/portfolio.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+{% endblock %}
