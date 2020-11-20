@@ -19,7 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog-site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 flatpages = FlatPages(app)
-freezer = Freezer(app)
+#freezer = Freezer(app)
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
 
@@ -71,7 +71,7 @@ def pygments_css():
     return pygments_style_defs('friendly'), 200, {'Content-Type': 'text/css'}
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "build":
-        freezer.freeze()
-    else:
-        app.run(host='0.0.0.0',debug=False)
+    # if len(sys.argv) > 1 and sys.argv[1] == "build":
+    #     freezer.freeze()
+    # else:
+    app.run(host='0.0.0.0',debug=False)
