@@ -68,6 +68,8 @@ etfs = etfs.set_index('Date')
 print(etfs.dtypes)
 print(etfs.head(5))
 ```
+&nbsp;
+
 
     VWRL    object
     VMID    object
@@ -82,6 +84,8 @@ print(etfs.head(5))
     2017-03-09  60.66  30.47  42.17
 
 
+&nbsp;
+
 
 ```python
 #Convert prices from objects to floats
@@ -91,6 +95,8 @@ etfs['VWRL'] = pd.to_numeric(etfs['VWRL'])
 print(etfs.dtypes)
 print(etfs.head(5))
 ```
+&nbsp;
+
 
     VWRL    float64
     VMID    float64
@@ -105,12 +111,16 @@ print(etfs.head(5))
     2017-03-09  60.66  30.47  42.17
 
 
+&nbsp;
+
 
 ```python
 #Normalise the prices using logarithmic returns
 etfs_log_rtn = np.log(etfs/etfs.shift(1))
 print(etfs_log_rtn.head(5))
 ```
+&nbsp;
+
 
                     VWRL      VMID      VFEM
     Date                                    
@@ -124,6 +134,8 @@ print(etfs_log_rtn.head(5))
 <h3>Plotting the Efficient Frontier</h3>
 Now that the price history for each ETF is formatted it is time to generate random weightings for each ETF in the portfolio (with the sum of the weightings equal to 1).<br> 
 The expected return and volatility of each generated portfolio is calculated, along with the sharpe ratio, and plotted as a scatter graph; each portfolio sitting on the hyperbola that is formed reflects the highest return possible for that level of risk.
+
+&nbsp;
 
 
 ```python
@@ -174,6 +186,8 @@ print('Current Portfolio Sharpe Ratio: ', curr_sharpe)
 print('Expected Return for current portfolio: ', curr_rtn)
 print('Expected Volatility for current portfolio: ', curr_vol)
 ```
+&nbsp;
+
 
     Maximum Sharpe Ratio:  0.26761502534650905
     Expected Return for max sharpe portfolio:  0.035542700873599585
@@ -183,14 +197,20 @@ print('Expected Volatility for current portfolio: ', curr_vol)
     Expected Volatility for current portfolio:  0.12320511999705094
 
 
+&nbsp;
+
 
 ```python
 max_sharpe_portfolio = all_weights[max_sharpe_loc,:]
 print('Max Sharpe Portfolio Weightings: ', max_sharpe_portfolio)
 ```
+&nbsp;
+
 
     Max Sharpe Portfolio Weightings:  [9.82157349e-01 1.72014968e-02 6.41154584e-04]
 
+
+&nbsp;
 
 
 ```python
@@ -239,6 +259,8 @@ The max sharpe portfolio ETF weightings are:<br>
 <br>
 To see how this portfolio would perform in the real world the next step is to back-test the portfolio and compare it to a benchmark such as my original portfolio; the <a href="https://github.com/mspstead/data-site/tree/data-site-first-branch/lambda%20functions/price_performance">portfolio performance API</a> I created can be used to do this analysis but it requires actual share amounts as inputs so these will need to be calculated first.
 
+&nbsp;
+
 
 ```python
 etfs_test = etfs.reset_index()
@@ -262,6 +284,8 @@ print('Max Sharpe Ratio Shares VWRL, VMID, VFEM: ',shares_mx_sharpe)
 print('Benchmark Shares VWRL, VMID, VFEM: ',shares_benchmark)
 
 ```
+&nbsp;
+
 
     Start Date:  2017-03-03
     End Date:  2020-03-02
@@ -295,6 +319,8 @@ Max Sharpe portfolio = {
 
 <br>The requests will be sent using postman and the results saved as json files current_portfolio_perf and max_sharpe_portfolio_perf.
 
+&nbsp;
+
 
 ```python
 curr_json = json.load(open('current_portfolio_perf.json'))
@@ -304,6 +330,8 @@ curr_perf['Date'] = pd.to_datetime(curr_perf['Date'])
 print('Current Portfolio:')
 print(curr_perf.head(5))
 ```
+&nbsp;
+
 
     Current Portfolio:
               Date  Cumulative_Return  Daily_Return
@@ -314,6 +342,8 @@ print(curr_perf.head(5))
     749 2017-03-09           0.214595     -0.306237
 
 
+&nbsp;
+
 
 ```python
 mx_sharpe_json = json.load(open('max_sharpe_perf.json'))
@@ -323,6 +353,8 @@ mx_sharpe_perf['Date'] = pd.to_datetime(mx_sharpe_perf['Date'])
 print('Maximum Sharpe Portfolio:')
 print(mx_sharpe_perf.head(5))
 ```
+&nbsp;
+
 
     Maximum Sharpe Portfolio:
               Date  Cumulative_Return  Daily_Return
@@ -332,6 +364,8 @@ print(mx_sharpe_perf.head(5))
     750 2017-03-08           0.583705      0.273115
     749 2017-03-09           0.322495     -0.261210
 
+
+&nbsp;
 
 
 ```python
@@ -345,10 +379,14 @@ plt.xticks()
 plt.legend()
 plt.show()
 ```
+&nbsp;
+
 
 
 ![png](static/images/portfolioopt/output_14_0.png)
 
+
+&nbsp;
 
 
 ```python
@@ -356,6 +394,8 @@ curr_perf.plot(x='Date',y='Daily_Return',title='Current Portfolio Daily Return',
 mx_sharpe_perf.plot(x='Date',y='Daily_Return',title='Max Sharpe Portfolio Daily Return',figsize=[15,10])
 plt.show()
 ```
+&nbsp;
+
 
 
 ![png](static/images/portfolioopt/output_15_0.png)
