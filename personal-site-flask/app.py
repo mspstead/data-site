@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 FLATPAGES_AUTO_RELOAD = DEBUG
 FLATPAGES_EXTENSION = '.md'
-FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite']
+FLATPAGES_MARKDOWN_EXTENSIONS = ['fenced_code','codehilite']
 FLATPAGES_ROOT = 'content'
 POST_DIR = 'posts'
 
