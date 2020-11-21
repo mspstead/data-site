@@ -35,6 +35,11 @@ def about_me():
     title = "About Me"
     return render_template('about.html',title=title)
 
+@app.route("/projects")
+def projects():
+    title = "My Projects"
+    return render_template('projects.html',title=title)
+
 @app.route("/portfolio")
 def portfolio():
     title = "Portfolio Analytics"
