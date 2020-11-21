@@ -3,7 +3,7 @@ date: 2020-02-20
 img: static/images/yfinance/finance.jpg
 read: 5 mins
 intro: Analysing the Yahoo Finance ETF pricing data quality with the Python YFinance Module.
-
+description: Review of Python Yahoo Finance library YFinance, price history quality review.
 
 <h3>Preface</h3>
 In this notebook I will be reviewing the daily ETF price data quality of the <a href="https://pypi.org/project/yfinance/">yfinance module</a> which scrapes equity prices and info from <a href="https://uk.finance.yahoo.com/">Yahoo Finance</a>.<br>

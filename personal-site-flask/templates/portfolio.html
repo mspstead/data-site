@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
+<title>Portfolio Analytics</title>
+<meta name="description" content="Interactive ETF portfolio tracker.">
 <body onload='get_performance({{ basket_composition | tojson }})'>
 <section class="blog-list px-3 py-5 p-md-5">
     <div class="main-wrapper">

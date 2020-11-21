@@ -3,7 +3,7 @@ date: 2020-03-05
 img: static/images/portfolioopt/analytics.png
 read: 5 mins
 intro: In this Jupyter notebook I will use Modern Portfolio Theory and the Efficient Frontier to optimise my ETF Portfolio.
-
+description: Python ETF and Equity Portfolio Optimisation using Markowitz Modern Portfolio Theory
 
 <h3>Portfolio Optimisation using Modern Portfolio Theory</h3>
 In this notebook I will be attempting to optimise my Vanguard ETF Portfolio using Modern Portfolio Theory (<a href="https://www.investopedia.com/terms/m/modernportfoliotheory.asp">MPT</a>); my portfolio currently consists of the following three ETFs:<br>
