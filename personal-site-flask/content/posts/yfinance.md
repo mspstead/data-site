@@ -41,6 +41,8 @@ print("Median of close price value VFEM:",VFEM_hist['Close'].median())
 print("Std dev. of close price value VFEM:",VFEM_hist['Close'].std())
 ```
 
+
+```text
     Index(['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Dividends',
            'Stock Splits'],
           dtype='object')
@@ -55,7 +57,7 @@ print("Std dev. of close price value VFEM:",VFEM_hist['Close'].std())
     Mean close price value VFEM: 301.8215053763437
     Median of close price value VFEM: 45.31
     Std dev. of close price value VFEM: 815.9961215119419
-
+```
 
 
 It appears that there is a large std deviation in close prices for VFEM.L with prices ranging from 34.31 to 4657.0<br>
@@ -73,11 +75,12 @@ print("Median of close price value VWRL:",VWRL_hist['Close'].median())
 print("Std dev. of close price value VWRL:",VWRL_hist['Close'].std())
 ```
 
+```text
     Min close price Value VWRL:  27.71
     Max close price value VWRL: 7371.0
     Median of close price value VWRL: 64.59
     Std dev. of close price value VWRL: 298.0387631318064
-
+```
 
 
 ```python
@@ -90,11 +93,12 @@ print("Median of close price value VMID:",VMID_hist['Close'].median())
 print("Std dev. of close price value VMID:",VMID_hist['Close'].std())
 ```
 
+```text
     Min close price Value VMID:  34.42
     Max close price value VMID: 3489.0
     Median of close price value VMID: 2974.44
     Std dev. of close price value VMID: 240.50230664653876
-
+```
 
 <h3>Initial analysis and thoughts</h3>
 The same large std deviation also seems to apply to VMID.L and VWRL.L.<br> It appears the yahoo pricing data for these Vanguard ETFs may be flipping between Major and Minor Currency (GBP and GBX), so the close prices are flipping by a factor of 100.<br>
@@ -128,8 +132,9 @@ plt.subplots_adjust(hspace=1)
 plt.show()
 ```
 
+```text
     None or less than 2 prices available for Close < std-dev graph in VMID
-
+```
 
 
 ![png](static/images/yfinance/output_8_1.png)
@@ -292,6 +297,7 @@ date_filter = (VMID_hist['Date']>='2019-10-15') & (VMID_hist['Date']<='2020-01-0
 print(VMID_hist[date_filter][['Date','Close','DailyReturn','CumulativeReturn']])
 ```
 
+```text
                Date   Close  DailyReturn  CumulativeReturn
     1267 2019-10-15  32.015     1.409566          4.325915
     1268 2019-10-16  31.985    -0.093706          4.232209
@@ -310,7 +316,7 @@ print(VMID_hist[date_filter][['Date','Close','DailyReturn','CumulativeReturn']])
     1281 2019-12-12     NaN     0.000000          4.214300
     1282 2020-01-02  34.890     9.116497         13.330798
     1283 2020-01-03  34.695    -0.558899         12.771898
-
+```
 
 Unfortunately it appears that Yahoo Finance is missing prices for VMID.L from the 1st November til the 2nd of January which explains the flat spot during this period.<br>
 
