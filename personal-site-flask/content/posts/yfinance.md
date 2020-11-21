@@ -10,14 +10,14 @@ In this notebook I will be reviewing the daily ETF price data quality of the <a 
 I am trying to find out if the data quality is of a sufficient standard so as to track live my daily ETF Portfolio performance to date on my personal blog.<br>
 Currently my investments since the 1st October 2019 are in the following Vanguard ETFs, <a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-emerging-markets-ucits-etf-usd-distributing">VFEM.L</a>, <a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-250-ucits-etf-gbp-distributing">VMID.L</a> and <a href="https://www.vanguardinvestor.co.uk/investments/vanguard-ftse-all-world-ucits-etf-usd-distributing">VWRL.L.</a><br> 
 These ETFs will be the focus of my investigation however if the pricing data proves reliable I may expand the scope later on to include other equities.
-
+&nbsp;
 
 ```python
 import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
 ```
-
+&nbsp;
 
 ```python
 #Create Ticker objects for each ETF
@@ -25,7 +25,7 @@ VFEM = yf.Ticker('VFEM.L')
 VWRL = yf.Ticker('VWRL.L')
 VMID = yf.Ticker('VMID.L')
 ```
-
+&nbsp;
 
 ```python
 #VFEM Initial Analysis
@@ -40,7 +40,7 @@ print("Mean close price value VFEM:",VFEM_hist['Close'].mean())
 print("Median of close price value VFEM:",VFEM_hist['Close'].median())
 print("Std dev. of close price value VFEM:",VFEM_hist['Close'].std())
 ```
-
+&nbsp;
 
 ```text
     Index(['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Dividends',
@@ -58,12 +58,11 @@ print("Std dev. of close price value VFEM:",VFEM_hist['Close'].std())
     Median of close price value VFEM: 45.31
     Std dev. of close price value VFEM: 815.9961215119419
 ```
-
+&nbsp;
 
 It appears that there is a large std deviation in close prices for VFEM.L with prices ranging from 34.31 to 4657.0<br>
 Let's check to see if the same applies to VWRL.L and VMID.L
-
-
+&nbsp;
 
 ```python
 VWRL_hist = VWRL.history(period="max")
@@ -74,6 +73,7 @@ print("Max close price value VWRL:",VWRL_hist['Close'].max())
 print("Median of close price value VWRL:",VWRL_hist['Close'].median())
 print("Std dev. of close price value VWRL:",VWRL_hist['Close'].std())
 ```
+&nbsp;
 
 ```text
     Min close price Value VWRL:  27.71
@@ -81,7 +81,7 @@ print("Std dev. of close price value VWRL:",VWRL_hist['Close'].std())
     Median of close price value VWRL: 64.59
     Std dev. of close price value VWRL: 298.0387631318064
 ```
-
+&nbsp;
 
 ```python
 VMID_hist = VMID.history(period="max")
@@ -92,6 +92,7 @@ print("Max close price value VMID:",VMID_hist['Close'].max())
 print("Median of close price value VMID:",VMID_hist['Close'].median())
 print("Std dev. of close price value VMID:",VMID_hist['Close'].std())
 ```
+&nbsp;
 
 ```text
     Min close price Value VMID:  34.42
@@ -99,12 +100,13 @@ print("Std dev. of close price value VMID:",VMID_hist['Close'].std())
     Median of close price value VMID: 2974.44
     Std dev. of close price value VMID: 240.50230664653876
 ```
+&nbsp;
 
 <h3>Initial analysis and thoughts</h3>
 The same large std deviation also seems to apply to VMID.L and VWRL.L.<br> It appears the yahoo pricing data for these Vanguard ETFs may be flipping between Major and Minor Currency (GBP and GBX), so the close prices are flipping by a factor of 100.<br>
 The Median Prices for VFEM and VWRL suggests that these ETFs are primarily priced in GBP, where as the Median of VWRL suggests that it is primarily priced in the Minor Currency GBX.<br>
 The KDE plot for each ETF should help confirm this.
-
+&nbsp;
 
 ```python
 %matplotlib inline
@@ -131,21 +133,22 @@ for i in range(0,len(price_history)):
 plt.subplots_adjust(hspace=1)
 plt.show()
 ```
+&nbsp;
 
 ```text
     None or less than 2 prices available for Close < std-dev graph in VMID
 ```
-
+&nbsp;
 
 ![png](static/images/yfinance/output_8_1.png)
-
+&nbsp;
 
 <h3>KDE Plot Analysis</h3>
 The KDE plots confirm that VFEM and VWRL have the bulk of their prices listed in the major currency GBP
 and VMID.L has the bulk of its prices listed in the minor currency GBX.<br>
 
 Next job is to normalise the prices for each ETF to the Major Currency GBP; this means dividing almost all of VMIDs prices by a factor of 100 and just the largest values in VFEM and VWRL.
-
+&nbsp;
 
 ```python
 #Normalise the prices using the STD DEV as a filter
@@ -164,20 +167,20 @@ for i in range(0,len(price_history)):
 plt.subplots_adjust(hspace=1)
 plt.show()
 ```
-
+&nbsp;
 
 ![png](static/images/yfinance/output_10_0.png)
-
+&nbsp;
 
 Now the prices have been normalised to GBP we can compare the daily return and cumluative return of each ETF.
-
+&nbsp;
 
 ```python
 VFEM_hist['DailyReturn'] = VFEM_hist['Close'].pct_change() * 100
 VWRL_hist['DailyReturn'] = VWRL_hist['Close'].pct_change() * 100
 VMID_hist['DailyReturn'] = VMID_hist['Close'].pct_change() * 100
 ```
-
+&nbsp;
 
 ```python
 fig, axes = plt.subplots(nrows=3, ncols=1)
@@ -193,20 +196,20 @@ for i in range(0,len(price_history)):
 plt.subplots_adjust(hspace=1)
 plt.show()
 ```
-
+&nbsp;
 
 ![png](static/images/yfinance/output_13_0.png)
-
+&nbsp;
 
 There is some suspiciously large daily changes in VWRL and VFEM which suggests there may be some poor close price records, but the data for the VMID looks ok with no large spikes in the daily change.
-
+&nbsp;
 
 ```python
 VFEM_hist['CumulativeReturn'] = VFEM_hist['DailyReturn'].cumsum()
 VWRL_hist['CumulativeReturn'] = VWRL_hist['DailyReturn'].cumsum()
 VMID_hist['CumulativeReturn'] = VMID_hist['DailyReturn'].cumsum()
 ```
-
+&nbsp;
 
 ```python
 fig, axes = plt.subplots(nrows=3, ncols=1)
@@ -222,16 +225,16 @@ for i in range(0,len(price_history)):
 plt.subplots_adjust(hspace=1)
 plt.show()
 ```
-
+&nbsp;
 
 ![png](static/images/yfinance/output_16_0.png)
-
+&nbsp;
 
 <h4>Daily and Cumulative Return Analysis</h4>
 There is some suspiciously large changes in the dalily return for VWRL and VFEM which suggests there may be some poor close price records, but the data for the VMID looks ok with no large spikes in the daily change.<br>
 Again the VMID Cumulative Return looks as expected, however the VWRL and VFEM cumulative return has some suspicously large jumps in returns for ETFs that track the All-World and Emerging Markets.<br>
 Most of the suspicous returns occur pre-2019 and as I only need the pricing data from Close 30th September 2019 onwards lets check its reliability starting from there.
-
+&nbsp;
 
 ```python
 #Filter price records to just 30/09/2019 onwards.
@@ -263,10 +266,10 @@ for i in range(0,len(price_history)):
 plt.subplots_adjust(hspace=1)
 plt.show()
 ```
-
+&nbsp;
 
 ![png](static/images/yfinance/output_18_0.png)
-
+&nbsp;
 
 
 ```python
@@ -283,19 +286,20 @@ for i in range(0,len(price_history)):
 plt.subplots_adjust(hspace=1)
 plt.show()
 ```
-
+&nbsp;
 
 ![png](static/images/yfinance/output_19_0.png)
-
+&nbsp;
 
 VFEM and VWRL look fine for this time period, however VMID appears to have periods of low or almost no change.<br>
 Best to check to see if there are changes in price occurring albeit very small or if the Yahoo Finance data has stagnant prices between the 1st of November and the 15th December.
-
+&nbsp;
 
 ```python
 date_filter = (VMID_hist['Date']>='2019-10-15') & (VMID_hist['Date']<='2020-01-04')
 print(VMID_hist[date_filter][['Date','Close','DailyReturn','CumulativeReturn']])
 ```
+&nbsp;
 
 ```text
                Date   Close  DailyReturn  CumulativeReturn
@@ -317,6 +321,7 @@ print(VMID_hist[date_filter][['Date','Close','DailyReturn','CumulativeReturn']])
     1282 2020-01-02  34.890     9.116497         13.330798
     1283 2020-01-03  34.695    -0.558899         12.771898
 ```
+&nbsp;
 
 Unfortunately it appears that Yahoo Finance is missing prices for VMID.L from the 1st November til the 2nd of January which explains the flat spot during this period.<br>
 
