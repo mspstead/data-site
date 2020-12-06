@@ -21,7 +21,7 @@ function createMap(photos) {
         var lon = photos[i].Lon;
         var date = photos[i].Date;
 
-        var markerHtml = '<a href='+url+' target="_blank"><img src='+url+' height="100%" width="100%"/></a><h5>Time of visit:<br>'+ date +'</h5>'
+        var markerHtml = '<a href='+url+' target="_blank"><img src='+url+' height="100%" width="100%"/></a><p>Time of visit:<br>'+ date +'</p>'
         var marker = L.marker([lat,lon],
             {icon: cameraIcon})
             .bindPopup(markerHtml);
