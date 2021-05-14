@@ -1,6 +1,6 @@
 title: Reviewing the Python YFinance Module
 date: 2020-02-20
-img: static/images/yfinance/finance.jpg
+img: static/images/yfinance/finance.jpeg
 read: 5 mins
 intro: Analysing the Yahoo Finance ETF pricing data quality with the Python YFinance Module.
 description: Review of Python Yahoo Finance library YFinance, price history quality review.
